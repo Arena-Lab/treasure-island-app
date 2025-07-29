@@ -1,8 +1,9 @@
 import streamlit as st
 
+# Config
 st.set_page_config(page_title="Treasure Island", page_icon="🏝️", layout="centered")
 
-# Basic CSS to give it some style
+# Theme
 st.markdown("""
     <style>
     html, body, [class*="css"] {
@@ -23,51 +24,65 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-st.title("🏝️ Welcome to Treasure Island")
+# Title
+st.title("🏝️ Treasure Island Adventure")
 st.markdown("### Your mission is to find the hidden treasure!")
 
+# Game state
 if "step" not in st.session_state:
     st.session_state.step = 1
+if "message" not in st.session_state:
+    st.session_state.message = ""
 
-def reset_game():
-    st.session_state.step = 1
-
+# Reset game
 if st.button("🔄 Restart Game"):
-    reset_game()
+    st.session_state.step = 1
+    st.session_state.message = ""
 
-# STEP 1
+# Scene 1
 if st.session_state.step == 1:
     st.markdown("You're in the middle of a roadcross.")
-    if st.button("Go Left"):
-        st.session_state.step = 2
-        st.experimental_user()
-    if st.button("Go Right"):
-        st.error("You fall into a hole. **Game Over!**")
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button("Go Left"):
+            st.session_state.step = 2
+    with col2:
+        if st.button("Go Right"):
+            st.session_state.message = "💀 You fall into a hole. **Game Over!**"
+            st.session_state.step = 99
 
-# STEP 2
+# Scene 2
 elif st.session_state.step == 2:
     st.markdown("You've reached a lake. What will you do?")
-    if st.button("🏊 Swim"):
-        st.error("You got attacked by a crocodile. **Game Over!**")
-    if st.button("⛵ Wait for a Boat"):
-        st.session_state.step = 3
-        st.experimental_rerun()
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button("🏊 Swim"):
+            st.session_state.message = "🐊 Attacked by a crocodile. **Game Over!**"
+            st.session_state.step = 99
+    with col2:
+        if st.button("⛵ Wait for a Boat"):
+            st.session_state.step = 3
 
-# STEP 3
+# Scene 3
 elif st.session_state.step == 3:
-    st.markdown("A boat arrives. You reach an island with 4 magical doors.")
-    st.markdown("Which one will you choose?")
+    st.markdown("A boat arrives. You reach an island with 4 magical doors. Which one do you choose?")
     col1, col2 = st.columns(2)
     with col1:
         if st.button("🚪 Red"):
-            st.error("Burned by fire. **Game Over!**")
+            st.session_state.message = "🔥 Burned by fire. **Game Over!**"
+            st.session_state.step = 99
         if st.button("🚪 Yellow"):
-            st.success("🎉 You found the treasure! You win!")
+            st.session_state.message = "🎉 You found the treasure! **You Win!**"
             st.balloons()
+            st.session_state.step = 99
     with col2:
         if st.button("🚪 White"):
-            st.error("You opened Heaven's Gate and fell. **Game Over!**")
+            st.session_state.message = "😇 You opened Heaven's Gate and fell. **Game Over!**"
+            st.session_state.step = 99
         if st.button("🚪 Blue"):
+            st.session_state.message = "🔁 You are sent back to the lake."
             st.session_state.step = 2
-            st.info("You are sent back to the lake.")
-            st.experimental_rerun()
+
+# Final screen
+if st.session_state.step == 99:
+    st.markdown("### " + st.session_state.message)
