@@ -40,7 +40,7 @@ if st.session_state.step == 1:
     st.markdown("You're in the middle of a roadcross.")
     if st.button("Go Left"):
         st.session_state.step = 2
-        st.experimental_rerun()
+        st.experimental_user()
     if st.button("Go Right"):
         st.error("You fall into a hole. **Game Over!**")
 
