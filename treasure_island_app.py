@@ -1,3 +1,4 @@
+
 import streamlit as st
 import random
 
@@ -18,6 +19,7 @@ for key, default in {
 if st.session_state.next_level:
     st.session_state.level = st.session_state.next_level
     st.session_state.next_level = None
+    st.rerun()
 
 # --- HANDLE GAME OVER ---
 if st.session_state.game_over:
@@ -28,6 +30,7 @@ if st.session_state.game_over:
     else:
         st.error(f"⚠️ {st.session_state.game_over}")
     st.session_state.game_over = None
+    st.rerun()
 
 # --- FUNCTIONS ---
 def advance(level):
@@ -67,7 +70,7 @@ if st.button("🔄 Restart Game"):
     st.session_state.lives = 3
     st.session_state.game_over = None
     st.session_state.next_level = None
-    st.experimental_rerun()
+    st.rerun()
 
 # --- LEVELS ---
 level = st.session_state.level
